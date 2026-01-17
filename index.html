@@ -1061,8 +1061,7 @@
                     } catch (e) { console.error("Save data load error", e); }
                 }
 
-                // [Fix] iOS PWA Audio Unlock
-                this.unlockAudio();
+                // [Refined] Resume Audio on Visibility Change (Only if already initialized)
                 document.addEventListener('visibilitychange', () => {
                     if (document.visibilityState === 'visible') {
                         this.resumeAudioForce();
@@ -1070,25 +1069,7 @@
                 });
             },
             methods: {
-                unlockAudio() {
-                    const unlock = async () => {
-                        try {
-                            await Tone.start();
-                            if (Tone.context.state !== 'running') {
-                                await Tone.context.resume();
-                            }
-                        } catch (e) { console.error("Unlock Error", e); }
 
-                        if (Tone.context.state === 'running') {
-                            window.removeEventListener('touchstart', unlock);
-                            window.removeEventListener('touchend', unlock);
-                            window.removeEventListener('click', unlock);
-                        }
-                    };
-                    window.addEventListener('touchstart', unlock, { passive: true });
-                    window.addEventListener('touchend', unlock, { passive: true });
-                    window.addEventListener('click', unlock);
-                },
 
                 saveGame() { localStorage.setItem('pca_save_v1', JSON.stringify(this.savedData)); },
                 toggleLang() { this.lang = this.lang === 'ja' ? 'en' : 'ja'; },
@@ -1100,7 +1081,17 @@
                     }
                 },
 
-                goToMenu() { this.stopGame(); this.gameState = 'menu'; },
+                async goToMenu() {
+                    // Explicitly unlock audio on button click
+                    try {
+                        await Tone.start();
+                        await this.initAudio();
+                        if (Tone.context.state !== 'running') Tone.context.resume();
+                    } catch (e) { console.error("Audio Init Error", e); }
+
+                    this.stopGame();
+                    this.gameState = 'menu';
+                },
                 goToShop() { this.stopGame(); this.gameState = 'shop'; },
                 abortMission() { this.stopGame(); this.gameState = 'menu'; },
 
@@ -1114,8 +1105,16 @@
                     }
                 },
 
-                selectLevel(lvl) {
+                async selectLevel(lvl) {
                     if (lvl <= this.savedData.maxLevel) {
+                        // Ensure audio is ready even if starting from menu (e.g. after refresh)
+                        try {
+                            if (Tone.context.state !== 'running') {
+                                await Tone.start();
+                                await this.initAudio();
+                            }
+                        } catch (e) { }
+
                         this.currentLevel = lvl;
                         this.gameState = 'briefing';
                     }
