@@ -1060,35 +1060,6 @@
                         }
                     } catch (e) { console.error("Save data load error", e); }
                 }
-
-                // [iOS PWA Fix] Handle page show event for back-forward cache
-                window.addEventListener('pageshow', (event) => {
-                    if (event.persisted) {
-                        // Page was restored from back-forward cache
-                        console.log('Page restored from bfcache');
-                        // Reset to clean state if in game
-                        if (this.gameState === 'playing') {
-                            this.stopGame();
-                            this.gameState = 'menu';
-                        }
-                    }
-                });
-
-                // Resume audio context when returning from background
-                document.addEventListener('visibilitychange', () => {
-                    if (document.visibilityState === 'visible' && this.synth) {
-                        console.log('App focused, resuming audio');
-                        this.resumeAudioForce();
-                    }
-                });
-
-                // [iOS PWA Fix] Also listen to focus event
-                window.addEventListener('focus', () => {
-                    if (this.synth && typeof Tone !== 'undefined') {
-                        console.log('Window focused, checking audio state');
-                        this.resumeAudioForce();
-                    }
-                });
             },
             methods: {
 
