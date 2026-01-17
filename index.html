@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta charset="UTF-8">
@@ -9,11 +8,10 @@
 
     <link rel="icon" type="image/png" href="./icon-192.png">
     <script>
-        window.va = window.va || function () { (window.va.q = window.va.q || []).push(arguments); };
+     window.va = window.va || function () { (window.va.q = window.va.q || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
-    <meta name="description"
-        content="ギターの指板（フレットボード）の音名をゲーム感覚でマスターできる無料Webアプリ。パワーコード、音感トレーニング、イヤートレーニングに最適。インストール不要で今すぐ遊べます。">
+    <meta name="description" content="ギターの指板（フレットボード）の音名をゲーム感覚でマスターできる無料Webアプリ。パワーコード、音感トレーニング、イヤートレーニングに最適。インストール不要で今すぐ遊べます。">
     <meta name="keywords" content="ギター,指板,音名,覚え方,パワーコード,音感,トレーニング,アプリ,無料,ゲーム">
     <meta name="author" content="Universal Make Associate">
     <meta name="robots" content="index, follow">
@@ -28,10 +26,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=Noto+Sans+JP:wght@300;500;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at 50% 10%, #1a2a3a 0%, #050505 100%);
@@ -48,15 +44,9 @@
             --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        [v-cloak] {
-            display: none !important;
-        }
+        [v-cloak] { display: none !important; }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
 
         body {
             background: var(--bg-gradient);
@@ -81,54 +71,28 @@
         }
 
         /* Animations */
-        .fade-enter-active,
-        .fade-leave-active {
-            transition: opacity 0.3s ease;
-        }
-
-        .fade-enter-from,
-        .fade-leave-to {
-            opacity: 0;
-        }
-
-        .slide-up-enter-active {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .slide-up-enter-from {
-            transform: translateY(50px);
-            opacity: 0;
-        }
-
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; }
+        .slide-up-enter-active { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .slide-up-enter-from { transform: translateY(50px); opacity: 0; }
+        
         @keyframes flashHint {
-            0% {
-                background: rgba(255, 204, 0, 0.2);
-                box-shadow: 0 0 0 rgba(255, 204, 0, 0);
-            }
-
-            50% {
-                background: rgba(255, 204, 0, 0.6);
-                box-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
-            }
-
-            100% {
-                background: rgba(255, 204, 0, 0.2);
-                box-shadow: 0 0 0 rgba(255, 204, 0, 0);
-            }
+            0% { background: rgba(255, 204, 0, 0.2); box-shadow: 0 0 0 rgba(255, 204, 0, 0); }
+            50% { background: rgba(255, 204, 0, 0.6); box-shadow: 0 0 15px rgba(255, 204, 0, 0.8); }
+            100% { background: rgba(255, 204, 0, 0.2); box-shadow: 0 0 0 rgba(255, 204, 0, 0); }
         }
 
         /* UI Components */
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-card);
         }
 
         .btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
             padding: 12px 24px;
@@ -137,328 +101,135 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             font-family: var(--font-main);
             text-transform: uppercase;
             touch-action: manipulation;
         }
-
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-            border: none;
-            box-shadow: 0 4px 15px var(--primary-glow);
-        }
-
-        .btn-accent {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            filter: grayscale(1);
-            cursor: not-allowed;
-        }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+        .btn:active:not(:disabled) { transform: translateY(0); }
+        .btn-primary { background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%); border: none; box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-accent { border-color: var(--accent); color: var(--accent); }
+        .btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
 
         .btn-reset {
-            background: transparent;
-            border: none;
-            color: #666;
-            font-size: 0.8rem;
-            margin-top: 30px;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 10px;
+            background: transparent; border: none; color: #666;
+            font-size: 0.8rem; margin-top: 30px; text-decoration: underline;
+            cursor: pointer; padding: 10px;
         }
-
-        .btn-reset:hover {
-            color: #888;
-        }
+        .btn-reset:hover { color: #888; }
 
         /* Screens */
         .screen-container {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
             padding: 20px;
             overflow-y: auto;
             z-index: 10;
         }
-
-        .hero-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
+        
+        .hero-section { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .logo-title {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 900;
+            font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900;
             background: linear-gradient(to right, #fff, #999);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-            letter-spacing: -2px;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem; letter-spacing: -2px;
         }
-
-        .logo-sub {
-            color: var(--primary);
-            letter-spacing: 4px;
-            font-weight: 700;
-            margin-bottom: 2rem;
+        .logo-sub { color: var(--primary); letter-spacing: 4px; font-weight: 700; margin-bottom: 2rem; }
+        
+        .settings-bar { 
+            position: absolute; top: 20px; right: 20px; 
+            display: flex; gap: 10px; z-index: 50;
         }
-
-        .settings-bar {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 50;
-        }
-
-        .icon-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid #555;
-            cursor: pointer;
-            color: #fff;
+        .icon-btn { 
+            width: 44px; height: 44px; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            background: rgba(0,0,0,0.6); border: 1px solid #555;
+            cursor: pointer; color: #fff; 
         }
 
         .drum-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 1px solid #333;
-            cursor: pointer;
-            transition: 0.3s;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+            background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 30px;
+            border: 1px solid #333; cursor: pointer; transition: 0.3s;
         }
+        .drum-toggle.active { border-color: var(--success); box-shadow: 0 0 10px rgba(0,255,157,0.2); }
+        .drum-indicator { width: 12px; height: 12px; border-radius: 50%; background: #444; }
+        .drum-toggle.active .drum-indicator { background: var(--success); box-shadow: 0 0 8px var(--success); }
 
-        .drum-toggle.active {
-            border-color: var(--success);
-            box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
-        }
-
-        .drum-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #444;
-        }
-
-        .drum-toggle.active .drum-indicator {
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-        }
-
-        .list-grid {
-            display: grid;
-            gap: 15px;
-            padding-bottom: 80px;
-            width: 100%;
-        }
-
+        .list-grid { display: grid; gap: 15px; padding-bottom: 80px; width: 100%; }
         .lesson-card {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background: rgba(20, 20, 20, 0.8);
+            padding: 20px; display: flex; align-items: center; gap: 15px;
+            cursor: pointer; position: relative; overflow: hidden;
+            background: rgba(20,20,20,0.8);
         }
-
-        .lesson-card.locked {
-            opacity: 0.5;
-            pointer-events: none;
-            filter: grayscale(1);
-        }
-
-        .lesson-card.active {
-            border-color: var(--primary);
-            background: rgba(0, 210, 255, 0.05);
-        }
-
-        .lesson-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-        }
+        .lesson-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        .lesson-card.active { border-color: var(--primary); background: rgba(0,210,255,0.05); }
+        .lesson-icon { width: 40px; height: 40px; border-radius: 50%; background: #333; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
 
         /* Game Screen */
-        .game-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 10px 0;
-            margin-bottom: 5px;
-        }
-
+        .game-top-bar { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; margin-bottom: 5px; }
+        
         /* Flexbox Layout for Battle Stage to prevent overlap */
         .battle-stage {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
-            /* アイテムとコード名の間に均等なスペース */
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-evenly; /* アイテムとコード名の間に均等なスペース */
             align-items: center;
-            position: relative;
-            min-height: 0;
-            /* Flexbox overflow fix */
+            position: relative; 
+            min-height: 0; /* Flexbox overflow fix */
         }
-
-        .target-display {
-            text-align: center;
-            position: relative;
-            z-index: 2;
-            animation: pulse 2s infinite ease-in-out;
-        }
-
+        
+        .target-display { text-align: center; position: relative; z-index: 2; animation: pulse 2s infinite ease-in-out; }
         .target-chord {
-            font-size: clamp(4rem, 12vw, 7rem);
-            /* 少しサイズ調整 */
-            font-weight: 900;
-            line-height: 1;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            font-size: clamp(4rem, 12vw, 7rem); /* 少しサイズ調整 */
+            font-weight: 900; line-height: 1;
+            color: #fff; text-shadow: 0 0 30px rgba(255,255,255,0.2);
         }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.03);
-            }
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
 
         /* Fretboard */
         .fretboard-container {
-            width: 100%;
-            padding: 15px 0;
+            width: 100%; padding: 15px 0;
             background: #222;
             border-top: 4px solid #444;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.8);
-            flex-shrink: 0;
-            z-index: 100;
-            margin-bottom: max(20px, env(safe-area-inset-bottom));
+            box-shadow: 0 5px 30px rgba(0,0,0,0.8);
+            flex-shrink: 0; z-index: 100;
+            margin-bottom: max(20px, env(safe-area-inset-bottom)); 
             border-radius: 12px;
             border-bottom: 4px solid #111;
         }
-
-        .string-row {
-            display: flex;
-            height: 50px;
-            /* 少しスリムに */
-            align-items: center;
-            position: relative;
+        .string-row { display: flex; height: 50px; /* 少しスリムに */ align-items: center; position: relative; }
+        .string-marker { 
+            width: 50px; text-align: center; font-weight: 900; font-size: 1.2rem; 
+            z-index: 2; color: #fff; text-shadow: 0 1px 2px #000;
         }
-
-        .string-marker {
-            width: 50px;
-            text-align: center;
-            font-weight: 900;
-            font-size: 1.2rem;
-            z-index: 2;
-            color: #fff;
-            text-shadow: 0 1px 2px #000;
-        }
-
         .string-line {
-            position: absolute;
-            left: 50px;
-            right: 0;
-            height: 3px;
-            top: 50%;
-            margin-top: -1.5px;
-            background: #888;
-            pointer-events: none;
-            z-index: 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            position: absolute; left: 50px; right: 0; height: 3px; top: 50%; margin-top: -1.5px;
+            background: #888; pointer-events: none; z-index: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
-
-        .frets-scroll {
-            flex: 1;
-            display: flex;
-            padding-right: 10px;
-        }
-
+        .frets-scroll { flex: 1; display: flex; padding-right: 10px; }
         .fret-zone {
-            flex: 1;
-            height: 100%;
-            border-right: 2px solid #666;
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.02);
+            flex: 1; height: 100%; border-right: 2px solid #666;
+            position: relative; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(255,255,255,0.02);
             z-index: 1;
             touch-action: manipulation;
         }
-
-        .fret-zone:active {
-            background: var(--primary) !important;
-            opacity: 0.6;
-        }
-
+        .fret-zone:active { background: var(--primary) !important; opacity: 0.6; }
+        
         /* 心眼の強化エフェクト */
-        .fret-zone.hint {
-            background: rgba(255, 204, 0, 0.4);
+        .fret-zone.hint { 
+            background: rgba(255, 204, 0, 0.4); 
             animation: flashHint 0.8s infinite alternate;
             border: 2px solid var(--gold);
         }
-
-        .pos-dot {
-            width: 14px;
-            height: 14px;
-            background: #bbb;
-            border-radius: 50%;
-            position: absolute;
-            box-shadow: 0 0 5px #000;
-            z-index: 2;
-        }
-
-        .fret-num {
-            position: absolute;
-            bottom: 2px;
-            font-size: 0.6rem;
-            color: #666;
-        }
+        
+        .pos-dot { width: 14px; height: 14px; background: #bbb; border-radius: 50%; position: absolute; box-shadow: 0 0 5px #000; z-index: 2; }
+        .fret-num { position: absolute; bottom: 2px; font-size: 0.6rem; color: #666; }
 
         /* Items - 重なり防止のため absolute をやめ、フロー配置にする */
         .items-dock {
@@ -466,478 +237,341 @@
             /* bottom: 10px; left: 50%; transform: translateX(-50%); ← 廃止 */
             margin-top: 10px;
             margin-bottom: 10px;
-            display: flex;
-            gap: 20px;
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 40px;
-            border: 1px solid #444;
-            z-index: 150;
+            display: flex; gap: 20px; padding: 10px 20px;
+            background: rgba(0,0,0,0.7); border-radius: 40px; border: 1px solid #444;
+            z-index: 150; 
         }
-
         .dock-item {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            filter: grayscale(1);
-            opacity: 0.7;
-            color: #fff;
-            position: relative;
+            width: 48px; height: 48px; display: flex; justify-content: center; align-items: center;
+            font-size: 1.5rem; cursor: pointer; filter: grayscale(1); opacity: 0.7; color: #fff; position: relative;
             transition: 0.2s;
         }
-
-        .dock-item.has-stock {
-            filter: grayscale(0);
-            opacity: 1;
-        }
-
-        .dock-item:active {
-            transform: scale(0.9);
-        }
-
+        .dock-item.has-stock { filter: grayscale(0); opacity: 1; }
+        .dock-item:active { transform: scale(0.9); }
         .dock-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--accent);
-            color: white;
-            font-size: 0.7rem;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
+            position: absolute; top: -5px; right: -5px; background: var(--accent); color: white;
+            font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-weight: bold;
         }
 
         .effect-text {
-            position: absolute;
-            font-weight: 900;
-            font-size: 2.5rem;
-            pointer-events: none;
-            animation: floatUp 0.6s forwards;
-            z-index: 50;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            position: absolute; font-weight: 900; font-size: 2.5rem; pointer-events: none;
+            animation: floatUp 0.6s forwards; z-index: 50; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
             white-space: nowrap;
         }
+        @keyframes floatUp { 0% { transform: translate(-50%, 0) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -80px) scale(1.5); opacity: 0; } }
 
-        @keyframes floatUp {
-            0% {
-                transform: translate(-50%, 0) scale(0.5);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(-50%, -80px) scale(1.5);
-                opacity: 0;
-            }
-        }
-
-        .bars-container {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .bar-track {
-            width: 100%;
-            height: 6px;
-            background: #333;
-            border-radius: 3px;
-            margin-bottom: 5px;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            transition: width 0.3s;
-        }
+        .bars-container { width: 100%; margin-bottom: 10px; }
+        .bar-track { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-bottom: 5px; overflow: hidden; }
+        .bar-fill { height: 100%; transition: width 0.3s; }
 
         .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 200;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200;
+            display: flex; justify-content: center; align-items: center; padding: 20px;
         }
-
-        .modal-content {
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            color: #eee;
-            background: #111;
-            border: 1px solid #333;
-            text-align: center;
-            max-height: 80vh;
-            overflow-y: auto;
+        .modal-content { 
+            width: 100%; max-width: 500px; padding: 30px; 
+            color: #eee; background: #111; border: 1px solid #333; text-align: center; 
+            max-height: 80vh; overflow-y: auto;
         }
-
-        .app-footer {
-            margin-top: auto;
-            padding: 15px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #aaa;
-            background: #050505;
-            border-top: 1px solid #111;
-            z-index: 100;
-            position: relative;
+        
+        .app-footer { 
+            margin-top: auto; padding: 15px; text-align: center; 
+            font-size: 0.8rem; color: #aaa;
+            background: #050505; border-top: 1px solid #111; 
+            z-index: 100; position: relative;
         }
-
-        .manual-section h3 {
-            color: var(--gold);
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-            margin-top: 20px;
-        }
-
-        .manual-section ul {
-            padding-left: 20px;
-            text-align: left;
-        }
-
-        .manual-section li {
-            margin-bottom: 8px;
-        }
-
-        .manual-section b {
-            color: var(--primary);
-        }
+        
+        .manual-section h3 { color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 20px; }
+        .manual-section ul { padding-left: 20px; text-align: left; }
+        .manual-section li { margin-bottom: 8px; }
+        .manual-section b { color: var(--primary); }
     </style>
 </head>
-
 <body>
 
-    <div id="app" v-cloak>
+<div id="app" v-cloak>
+    
+    <transition name="fade">
+    <div v-if="gameState === 'title'" class="screen-container">
+        <div class="settings-bar">
+            <div class="icon-btn" @click="toggleLang">{{ lang === 'ja' ? 'EN' : 'JP' }}</div>
+            <div class="icon-btn" @click="showManual = true"><i class="fa-solid fa-question"></i></div>
+        </div>
 
-        <transition name="fade">
-            <div v-if="gameState === 'title'" class="screen-container">
-                <div class="settings-bar">
-                    <div class="icon-btn" @click="toggleLang">{{ lang === 'ja' ? 'EN' : 'JP' }}</div>
-                    <div class="icon-btn" @click="showManual = true"><i class="fa-solid fa-question"></i></div>
-                </div>
-
-                <div class="hero-section">
-                    <h1 class="logo-title">POWER CHORD<br>ACADEMY</h1>
-                    <div class="logo-sub">GLASS EDITION</div>
-
-                    <div class="drum-toggle" :class="{active: isDrumActive}" @click="isDrumActive = !isDrumActive">
-                        <div class="drum-indicator"></div>
-                        <div style="font-weight: bold; font-size: 0.9rem;">
-                            <i class="fa-solid fa-drum"></i> {{ t.drums }}: {{ isDrumActive ? 'ON' : 'OFF' }}
-                        </div>
-                    </div>
-
-                    <div style="color: var(--gold); font-weight: bold; margin-bottom: 20px; font-size: 1.2rem;">
-                        <i class="fa-solid fa-coins"></i> {{ savedData.gold }} G
-                    </div>
-
-                    <button class="btn btn-primary"
-                        style="min-width: 220px; margin-bottom: 15px; font-size: 1.1rem; padding: 15px;"
-                        @click="goToMenu">
-                        <i class="fa-solid fa-play"></i> {{ t.start }}
-                    </button>
-                    <button class="btn btn-accent" style="min-width: 220px;" @click="goToShop">
-                        <i class="fa-solid fa-store"></i> {{ t.shop }}
-                    </button>
-
-                    <button class="btn-reset" @click="resetGameData">
-                        <i class="fa-solid fa-trash"></i> {{ t.resetData }}
-                    </button>
+        <div class="hero-section">
+            <h1 class="logo-title">POWER CHORD<br>ACADEMY</h1>
+            <div class="logo-sub">GLASS EDITION</div>
+            
+            <div class="drum-toggle" :class="{active: isDrumActive}" @click="isDrumActive = !isDrumActive">
+                <div class="drum-indicator"></div>
+                <div style="font-weight: bold; font-size: 0.9rem;">
+                    <i class="fa-solid fa-drum"></i> {{ t.drums }}: {{ isDrumActive ? 'ON' : 'OFF' }}
                 </div>
             </div>
-        </transition>
 
-        <transition name="fade">
-            <div v-if="gameState === 'menu'" class="screen-container">
-                <div class="game-top-bar">
-                    <h2 style="margin:0;">{{ t.lessonList }}</h2>
-                    <button class="btn" style="padding: 8px 16px; font-size: 0.8rem;" @click="gameState='title'">{{
-                        t.back }}</button>
-                </div>
-                <div class="list-grid">
-                    <div v-for="lvl in 50" :key="lvl" class="glass-panel lesson-card" :class="{
+            <div style="color: var(--gold); font-weight: bold; margin-bottom: 20px; font-size: 1.2rem;">
+                <i class="fa-solid fa-coins"></i> {{ savedData.gold }} G
+            </div>
+
+            <button class="btn btn-primary" style="min-width: 220px; margin-bottom: 15px; font-size: 1.1rem; padding: 15px;" @click="goToMenu">
+                <i class="fa-solid fa-play"></i> {{ t.start }}
+            </button>
+            <button class="btn btn-accent" style="min-width: 220px;" @click="goToShop">
+                <i class="fa-solid fa-store"></i> {{ t.shop }}
+            </button>
+
+            <button class="btn-reset" @click="resetGameData">
+                <i class="fa-solid fa-trash"></i> {{ t.resetData }}
+            </button>
+        </div>
+    </div>
+    </transition>
+
+    <transition name="fade">
+    <div v-if="gameState === 'menu'" class="screen-container">
+        <div class="game-top-bar">
+            <h2 style="margin:0;">{{ t.lessonList }}</h2>
+            <button class="btn" style="padding: 8px 16px; font-size: 0.8rem;" @click="gameState='title'">{{ t.back }}</button>
+        </div>
+        <div class="list-grid">
+            <div v-for="lvl in 50" :key="lvl" 
+                 class="glass-panel lesson-card"
+                 :class="{
                     'locked': lvl > savedData.maxLevel,
                     'active': lvl === savedData.maxLevel,
                     'cleared': lvl < savedData.maxLevel
-                 }" @click="selectLevel(lvl)">
-                        <div class="lesson-icon">
-                            <i v-if="lvl < savedData.maxLevel" class="fa-solid fa-check"
-                                style="color: var(--success);"></i>
-                            <i v-else-if="lvl === savedData.maxLevel" class="fa-solid fa-play"
-                                style="color: var(--primary);"></i>
-                            <i v-else class="fa-solid fa-lock" style="color: #666;"></i>
-                        </div>
-                        <div style="flex:1;">
-                            <div
-                                style="font-size: 0.75rem; color: var(--primary); font-weight: bold; text-transform: uppercase;">
-                                LESSON {{ lvl }}</div>
-                            <div style="font-weight: bold; margin-bottom: 4px; color: #fff;">{{ getMissionTitle(lvl) }}
-                            </div>
-                            <div style="font-size: 0.8rem; color: #888;">{{ getMissionDesc(lvl) }}</div>
-                        </div>
+                 }"
+                 @click="selectLevel(lvl)">
+                <div class="lesson-icon">
+                    <i v-if="lvl < savedData.maxLevel" class="fa-solid fa-check" style="color: var(--success);"></i>
+                    <i v-else-if="lvl === savedData.maxLevel" class="fa-solid fa-play" style="color: var(--primary);"></i>
+                    <i v-else class="fa-solid fa-lock" style="color: #666;"></i>
+                </div>
+                <div style="flex:1;">
+                    <div style="font-size: 0.75rem; color: var(--primary); font-weight: bold; text-transform: uppercase;">LESSON {{ lvl }}</div>
+                    <div style="font-weight: bold; margin-bottom: 4px; color: #fff;">{{ getMissionTitle(lvl) }}</div>
+                    <div style="font-size: 0.8rem; color: #888;">{{ getMissionDesc(lvl) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </transition>
+
+    <transition name="fade">
+    <div v-if="gameState === 'briefing'" class="modal-overlay">
+        <div class="glass-panel modal-content slide-up">
+            <div style="color: var(--primary); font-weight: bold; margin-bottom: 10px;">LESSON {{ currentLevel }}</div>
+            <h2 style="margin: 0 0 15px 0; font-size: 1.8rem; line-height: 1.2;">{{ getMissionTitle(currentLevel) }}</h2>
+            <p style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">{{ getMissionDesc(currentLevel) }}</p>
+            
+            <div style="background: rgba(255, 204, 0, 0.1); border-left: 3px solid var(--gold); padding: 15px; margin: 20px 0; text-align: left;">
+                <i class="fa-solid fa-lightbulb" style="color: var(--gold); margin-right: 8px;"></i>
+                <span style="font-size: 0.9rem; color: #ddd;">
+                    {{ t[getLevelInfo(currentLevel).advKey] }}
+                </span>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" @click="startMission">{{ t.startLesson }}</button>
+            <button class="btn" style="width: 100%; border:none; color: #888;" @click="gameState='menu'">{{ t.cancel }}</button>
+        </div>
+    </div>
+    </transition>
+
+    <div v-if="gameState === 'playing'" class="screen-container" style="padding: 20px 20px 0 20px; justify-content: flex-start;">
+        
+        <div style="padding-bottom: 15px; flex-shrink: 0; z-index: 10;">
+            <div class="game-top-bar">
+                <div style="color: var(--primary); font-weight: 700;">LESSON {{ currentLevel }}</div>
+                <div style="text-align: right;">
+                    <button class="btn" style="padding:4px 12px; font-size:0.7rem; margin-bottom:5px;" @click="abortMission">{{ t.cancel }}</button>
+                    <div style="font-family: monospace; font-size: 1.1rem; color: #fff;">SCORE: <span style="color:var(--gold);">{{ score }}</span></div>
+                    <div v-if="combo > 1" style="color: var(--accent); font-weight:900; font-size: 1.2rem; text-shadow: 0 0 10px var(--accent);">
+                        {{ combo }} COMBO!
                     </div>
                 </div>
             </div>
-        </transition>
-
-        <transition name="fade">
-            <div v-if="gameState === 'briefing'" class="modal-overlay">
-                <div class="glass-panel modal-content slide-up">
-                    <div style="color: var(--primary); font-weight: bold; margin-bottom: 10px;">LESSON {{ currentLevel
-                        }}</div>
-                    <h2 style="margin: 0 0 15px 0; font-size: 1.8rem; line-height: 1.2;">{{
-                        getMissionTitle(currentLevel) }}</h2>
-                    <p style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">{{ getMissionDesc(currentLevel) }}</p>
-
-                    <div
-                        style="background: rgba(255, 204, 0, 0.1); border-left: 3px solid var(--gold); padding: 15px; margin: 20px 0; text-align: left;">
-                        <i class="fa-solid fa-lightbulb" style="color: var(--gold); margin-right: 8px;"></i>
-                        <span style="font-size: 0.9rem; color: #ddd;">
-                            {{ t[getLevelInfo(currentLevel).advKey] }}
-                        </span>
-                    </div>
-
-                    <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" @click="startMission">{{
-                        t.startLesson }}</button>
-                    <button class="btn" style="width: 100%; border:none; color: #888;" @click="gameState='menu'">{{
-                        t.cancel }}</button>
-                </div>
+            <div class="bars-container">
+                <div class="bar-track"><div class="bar-fill" :style="{width: (progress/reqProgress)*100 + '%', background: 'var(--success)'}"></div></div>
+                <div class="bar-track" style="height: 4px;"><div class="bar-fill" :style="{width: timerValue + '%', background: activeEffects.clock ? '#00ccff' : 'var(--gold)'}"></div></div>
             </div>
-        </transition>
+        </div>
 
-        <div v-if="gameState === 'playing'" class="screen-container"
-            style="padding: 20px 20px 0 20px; justify-content: flex-start;">
-
-            <div style="padding-bottom: 15px; flex-shrink: 0; z-index: 10;">
-                <div class="game-top-bar">
-                    <div style="color: var(--primary); font-weight: 700;">LESSON {{ currentLevel }}</div>
-                    <div style="text-align: right;">
-                        <button class="btn" style="padding:4px 12px; font-size:0.7rem; margin-bottom:5px;"
-                            @click="abortMission">{{ t.cancel }}</button>
-                        <div style="font-family: monospace; font-size: 1.1rem; color: #fff;">SCORE: <span
-                                style="color:var(--gold);">{{ score }}</span></div>
-                        <div v-if="combo > 1"
-                            style="color: var(--accent); font-weight:900; font-size: 1.2rem; text-shadow: 0 0 10px var(--accent);">
-                            {{ combo }} COMBO!
-                        </div>
-                    </div>
-                </div>
-                <div class="bars-container">
-                    <div class="bar-track">
-                        <div class="bar-fill"
-                            :style="{width: (progress/reqProgress)*100 + '%', background: 'var(--success)'}"></div>
-                    </div>
-                    <div class="bar-track" style="height: 4px;">
-                        <div class="bar-fill"
-                            :style="{width: timerValue + '%', background: activeEffects.clock ? '#00ccff' : 'var(--gold)'}">
-                        </div>
-                    </div>
+        <div class="battle-stage" @mousedown="resumeAudioForce">
+            <div class="target-display" v-if="currentTarget">
+                <div style="font-size: 1.2rem; color: #aaa; font-weight: 500; margin-bottom: 10px;">{{ currentTarget.string }} {{ t.stringRoot }}</div>
+                <div class="target-chord" :style="{color: currentTarget.string === 6 ? '#ff4444' : '#44aaff'}">
+                    {{ currentTarget.note }}<span style="font-size: 0.5em; opacity: 0.7;">5</span>
                 </div>
             </div>
 
-            <div class="battle-stage" @mousedown="resumeAudioForce">
-                <div class="target-display" v-if="currentTarget">
-                    <div style="font-size: 1.2rem; color: #aaa; font-weight: 500; margin-bottom: 10px;">{{
-                        currentTarget.string }} {{ t.stringRoot }}</div>
-                    <div class="target-chord" :style="{color: currentTarget.string === 6 ? '#ff4444' : '#44aaff'}">
-                        {{ currentTarget.note }}<span style="font-size: 0.5em; opacity: 0.7;">5</span>
-                    </div>
+            <div class="items-dock" v-if="savedData && savedData.inventory">
+                <div class="dock-item" :class="{'has-stock': savedData.inventory.clock > 0}" @click="useItem('clock')" :style="{color: activeEffects.clock ? 'var(--primary)' : '#fff'}">
+                    <i class="fa-solid fa-hourglass-half"></i> <div class="dock-badge">{{ savedData.inventory.clock || 0 }}</div>
                 </div>
-
-                <div class="items-dock" v-if="savedData && savedData.inventory">
-                    <div class="dock-item" :class="{'has-stock': savedData.inventory.clock > 0}"
-                        @click="useItem('clock')" :style="{color: activeEffects.clock ? 'var(--primary)' : '#fff'}">
-                        <i class="fa-solid fa-hourglass-half"></i>
-                        <div class="dock-badge">{{ savedData.inventory.clock || 0 }}</div>
-                    </div>
-                    <div class="dock-item" :class="{'has-stock': savedData.inventory.shield > 0}"
-                        @click="useItem('shield')" :style="{color: activeEffects.shield ? 'var(--primary)' : '#fff'}">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <div class="dock-badge">{{ savedData.inventory.shield || 0 }}</div>
-                    </div>
-                    <div class="dock-item" :class="{'has-stock': savedData.inventory.eye > 0}" @click="useItem('eye')"
-                        :style="{color: activeEffects.eye ? 'var(--primary)' : '#fff'}">
-                        <i class="fa-solid fa-eye"></i>
-                        <div class="dock-badge">{{ savedData.inventory.eye || 0 }}</div>
-                    </div>
+                <div class="dock-item" :class="{'has-stock': savedData.inventory.shield > 0}" @click="useItem('shield')" :style="{color: activeEffects.shield ? 'var(--primary)' : '#fff'}">
+                    <i class="fa-solid fa-shield-halved"></i> <div class="dock-badge">{{ savedData.inventory.shield || 0 }}</div>
                 </div>
-
-                <div v-for="ef in hitEffects" :key="ef.id" class="effect-text"
-                    :style="{left: ef.x + 'px', top: ef.y + 'px', color: ef.color, fontSize: ef.size}">
-                    {{ ef.text }}
+                <div class="dock-item" :class="{'has-stock': savedData.inventory.eye > 0}" @click="useItem('eye')" :style="{color: activeEffects.eye ? 'var(--primary)' : '#fff'}">
+                    <i class="fa-solid fa-eye"></i> <div class="dock-badge">{{ savedData.inventory.eye || 0 }}</div>
                 </div>
             </div>
 
-            <div class="fretboard-container" @mousedown="resumeAudioForce">
-                <div class="string-row">
-                    <div class="string-marker" style="color: #ff4444;">6</div>
-                    <div class="string-line"></div>
-                    <div class="frets-scroll">
-                        <div v-for="(n, i) in 13" :key="'s6-'+i" class="fret-zone"
-                            :class="{'hint': activeEffects.eye && currentTarget && currentTarget.string===6 && currentTarget.fret===i}"
-                            @touchstart.prevent="handleInput($event, 6, i)" @mousedown="handleInput($event, 6, i)">
-                            <div v-if="[3,5,7,9,12].includes(i)" class="pos-dot"></div>
-                            <div class="fret-num">{{ i }}</div>
-                        </div>
+            <div v-for="ef in hitEffects" :key="ef.id" class="effect-text" 
+                 :style="{left: ef.x + 'px', top: ef.y + 'px', color: ef.color, fontSize: ef.size}">
+                {{ ef.text }}
+            </div>
+        </div>
+
+        <div class="fretboard-container" @mousedown="resumeAudioForce">
+            <div class="string-row">
+                <div class="string-marker" style="color: #ff4444;">6</div>
+                <div class="string-line"></div>
+                <div class="frets-scroll">
+                    <div v-for="(n, i) in 13" :key="'s6-'+i" class="fret-zone" 
+                         :class="{'hint': activeEffects.eye && currentTarget && currentTarget.string===6 && currentTarget.fret===i}"
+                         @touchstart.prevent="handleInput($event, 6, i)" 
+                         @mousedown="handleInput($event, 6, i)">
+                        <div v-if="[3,5,7,9,12].includes(i)" class="pos-dot"></div>
+                        <div class="fret-num">{{ i }}</div>
                     </div>
                 </div>
-                <div class="string-row">
-                    <div class="string-marker" style="color: #44aaff;">5</div>
-                    <div class="string-line"></div>
-                    <div class="frets-scroll">
-                        <div v-for="(n, i) in 13" :key="'s5-'+i" class="fret-zone"
-                            :class="{'hint': activeEffects.eye && currentTarget && currentTarget.string===5 && currentTarget.fret===i}"
-                            @touchstart.prevent="handleInput($event, 5, i)" @mousedown="handleInput($event, 5, i)">
-                            <div v-if="[3,5,7,9,12].includes(i)" class="pos-dot"></div>
-                            <div class="fret-num">{{ i }}</div>
-                        </div>
+            </div>
+            <div class="string-row">
+                <div class="string-marker" style="color: #44aaff;">5</div>
+                <div class="string-line"></div>
+                <div class="frets-scroll">
+                    <div v-for="(n, i) in 13" :key="'s5-'+i" class="fret-zone"
+                         :class="{'hint': activeEffects.eye && currentTarget && currentTarget.string===5 && currentTarget.fret===i}"
+                         @touchstart.prevent="handleInput($event, 5, i)" 
+                         @mousedown="handleInput($event, 5, i)">
+                        <div v-if="[3,5,7,9,12].includes(i)" class="pos-dot"></div>
+                        <div class="fret-num">{{ i }}</div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <transition name="fade">
-            <div v-if="gameState === 'shop'" class="screen-container">
-                <div class="game-top-bar">
-                    <h2>{{ t.shop }}</h2>
-                    <button class="btn" @click="gameState='title'">{{ t.back }}</button>
-                </div>
-                <div style="text-align: right; color: var(--gold); margin-bottom: 20px; font-weight: bold;">
-                    {{ t.funds }}: {{ savedData.gold }} G
-                </div>
-
-                <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; color: #888;">{{ t.items }}</h3>
-                <div class="list-grid"
-                    style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); display:grid;">
-                    <div v-for="item in shopItems" :key="item.id" class="glass-panel"
-                        style="padding: 15px; text-align: center;">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">{{ item.icon }}</div>
-                        <div style="font-weight: bold; font-size: 0.9rem;">{{ lang==='ja'?item.name:item.nameEn }}</div>
-                        <div style="color: var(--gold); margin: 5px 0;">{{ item.cost }} G</div>
-                        <button class="btn btn-primary" style="padding: 5px 15px; width: 100%; font-size: 0.8rem;"
-                            @click="buyItem(item.id, item.cost)" :disabled="savedData.gold < item.cost">{{ t.buy
-                            }}</button>
-                        <div style="font-size: 0.7rem; color: #888; margin-top: 5px;">{{ t.owned }}: {{
-                            savedData.inventory[item.id] || 0 }}</div>
-                    </div>
-                </div>
-
-                <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; color: #888; margin-top: 30px;">{{
-                    t.soundGear }}</h3>
-                <div class="list-grid">
-                    <div v-for="gear in gearList" :key="gear.id" class="glass-panel"
-                        style="padding: 15px; display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display:flex; align-items:center; gap: 15px;">
-                            <div style="font-size: 1.5rem;">{{ gear.icon }}</div>
-                            <div style="text-align: left;">
-                                <div style="font-weight: bold;">{{ lang==='ja' ? gear.name : gear.nameEn }}</div>
-                                <div style="font-size: 0.8rem; color: #888;">{{ gear.cost }} G</div>
-                            </div>
-                        </div>
-                        <div v-if="!savedData.unlockedGears.includes(gear.id)">
-                            <button class="btn btn-accent" @click="buyGear(gear.id, gear.cost)"
-                                :disabled="savedData.gold < gear.cost">{{ t.buy }}</button>
-                        </div>
-                        <div v-else>
-                            <button v-if="savedData.equippedGear !== gear.id" class="btn" @click="equipGear(gear.id)">{{
-                                t.equip }}</button>
-                            <span v-else style="color: var(--success); font-weight: bold; font-size: 0.9rem;"><i
-                                    class="fa-solid fa-check"></i> {{ t.owned }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </transition>
-
-        <transition name="fade">
-            <div v-if="gameState === 'result'" class="modal-overlay">
-                <div class="glass-panel modal-content slide-up">
-                    <div v-if="result.isClear">
-                        <i class="fa-solid fa-crown"
-                            style="font-size: 3rem; color: var(--gold); margin-bottom: 15px;"></i>
-                        <h2 style="color: var(--success); font-size: 2rem; margin: 0;">{{ t.clearTitle }}</h2>
-                        <p>{{ t.clearMsg }}</p>
-                    </div>
-                    <div v-else>
-                        <i class="fa-solid fa-heart-crack"
-                            style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
-                        <h2 style="color: var(--accent); font-size: 2rem; margin: 0;">{{ t.failTitle }}</h2>
-                        <p>{{ t.failMsg }}</p>
-                    </div>
-
-                    <div style="font-size: 2.5rem; font-weight: 900; margin: 20px 0;">{{ score }} <span
-                            style="font-size: 1rem;">PTS</span></div>
-                    <div style="color: var(--gold); margin-bottom: 30px; font-size: 1.2rem;">+{{ result.reward }} G
-                    </div>
-
-                    <div style="display: grid; gap: 10px;">
-                        <button v-if="result.isClear && currentLevel < 50" class="btn btn-primary"
-                            @click="nextMission">{{ t.next }}</button>
-                        <button v-else class="btn btn-primary" @click="startMission">{{ t.retry }}</button>
-                        <button class="btn" @click="goToMenu">{{ t.lessonList }}</button>
-                    </div>
-                </div>
-            </div>
-        </transition>
-
-        <transition name="fade">
-            <div v-if="showManual" class="modal-overlay">
-                <div class="glass-panel modal-content slide-up">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                        <h2 style="margin:0; color: var(--primary);">{{ t.manualTitle }}</h2>
-                        <button class="icon-btn" @click="showManual = false"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                    <div v-html="t.manualContent" style="line-height: 1.6; color: #ddd;"></div>
-                </div>
-            </div>
-        </transition>
-
-        <footer class="app-footer">
-            ©2026 <a href="https://note.com/jazzy_begin">buro</a>
-        </footer>
-
     </div>
 
-    <script>
-        const { createApp } = Vue;
+    <transition name="fade">
+    <div v-if="gameState === 'shop'" class="screen-container">
+        <div class="game-top-bar">
+            <h2>{{ t.shop }}</h2>
+            <button class="btn" @click="gameState='title'">{{ t.back }}</button>
+        </div>
+        <div style="text-align: right; color: var(--gold); margin-bottom: 20px; font-weight: bold;">
+            {{ t.funds }}: {{ savedData.gold }} G
+        </div>
 
-        createApp({
-            data() {
-                return {
-                    gameState: 'title',
-                    showManual: false,
-                    lang: 'ja',
-                    isDrumActive: true,
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; color: #888;">{{ t.items }}</h3>
+        <div class="list-grid" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); display:grid;">
+            <div v-for="item in shopItems" :key="item.id" class="glass-panel" style="padding: 15px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 10px;">{{ item.icon }}</div>
+                <div style="font-weight: bold; font-size: 0.9rem;">{{ lang==='ja'?item.name:item.nameEn }}</div>
+                <div style="color: var(--gold); margin: 5px 0;">{{ item.cost }} G</div>
+                <button class="btn btn-primary" style="padding: 5px 15px; width: 100%; font-size: 0.8rem;" 
+                        @click="buyItem(item.id, item.cost)" :disabled="savedData.gold < item.cost">{{ t.buy }}</button>
+                <div style="font-size: 0.7rem; color: #888; margin-top: 5px;">{{ t.owned }}: {{ savedData.inventory[item.id] || 0 }}</div>
+            </div>
+        </div>
 
-                    dict: {
-                        ja: {
-                            start: "練習を始める", shop: "機材ショップ", lessonList: "レッスン一覧",
-                            back: "戻る", funds: "所持金", buy: "購入", owned: "所持", equip: "装備",
-                            items: "サポートアイテム", soundGear: "サウンド機材", drums: "ドラム",
-                            teacherPoint: "先生のアドバイス", startLesson: "レッスン開始", cancel: "中断",
-                            stringRoot: "弦ルート", clearTitle: "素晴らしい！", clearMsg: "よくできました。次のステップへ進みましょう。",
-                            failTitle: "残念...", failMsg: "諦めないで。もう一度トライしましょう。",
-                            next: "次のレッスンへ", retry: "もう一度挑戦",
-                            resetData: "データを初期化",
-                            resetConfirm: "本当に全てのデータを削除して初期化しますか？この操作は取り消せません。",
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; color: #888; margin-top: 30px;">{{ t.soundGear }}</h3>
+        <div class="list-grid">
+            <div v-for="gear in gearList" :key="gear.id" class="glass-panel" style="padding: 15px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display:flex; align-items:center; gap: 15px;">
+                    <div style="font-size: 1.5rem;">{{ gear.icon }}</div>
+                    <div style="text-align: left;">
+                        <div style="font-weight: bold;">{{ lang==='ja' ? gear.name : gear.nameEn }}</div>
+                        <div style="font-size: 0.8rem; color: #888;">{{ gear.cost }} G</div>
+                    </div>
+                </div>
+                <div v-if="!savedData.unlockedGears.includes(gear.id)">
+                    <button class="btn btn-accent" @click="buyGear(gear.id, gear.cost)" :disabled="savedData.gold < gear.cost">{{ t.buy }}</button>
+                </div>
+                <div v-else>
+                    <button v-if="savedData.equippedGear !== gear.id" class="btn" @click="equipGear(gear.id)">{{ t.equip }}</button>
+                    <span v-else style="color: var(--success); font-weight: bold; font-size: 0.9rem;"><i class="fa-solid fa-check"></i> {{ t.owned }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </transition>
 
-                            adv_basic: "ポジションマーク(●)を信じろ。3, 5, 7, 9, 12フレットにある。",
-                            adv_low: "8フレットはC、10フレットはDだ。位置関係を体で覚えろ。",
-                            adv_string5: "5弦1フレットはBbだ。6弦とは景色が違うぞ。注意せよ。",
-                            adv_mix: "6弦Gの真下はC、6弦Aの真下はDだ。この法則を使え。",
-                            adv_final: "直感を研ぎ澄ませ。考えるな、感じろ。",
+    <transition name="fade">
+    <div v-if="gameState === 'result'" class="modal-overlay">
+        <div class="glass-panel modal-content slide-up">
+            <div v-if="result.isClear">
+                <i class="fa-solid fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 15px;"></i>
+                <h2 style="color: var(--success); font-size: 2rem; margin: 0;">{{ t.clearTitle }}</h2>
+                <p>{{ t.clearMsg }}</p>
+            </div>
+            <div v-else>
+                <i class="fa-solid fa-heart-crack" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
+                <h2 style="color: var(--accent); font-size: 2rem; margin: 0;">{{ t.failTitle }}</h2>
+                <p>{{ t.failMsg }}</p>
+            </div>
+            
+            <div style="font-size: 2.5rem; font-weight: 900; margin: 20px 0;">{{ score }} <span style="font-size: 1rem;">PTS</span></div>
+            <div style="color: var(--gold); margin-bottom: 30px; font-size: 1.2rem;">+{{ result.reward }} G</div>
+            
+            <div style="display: grid; gap: 10px;">
+                <button v-if="result.isClear && currentLevel < 50" class="btn btn-primary" @click="nextMission">{{ t.next }}</button>
+                <button v-else class="btn btn-primary" @click="startMission">{{ t.retry }}</button>
+                <button class="btn" @click="goToMenu">{{ t.lessonList }}</button>
+            </div>
+        </div>
+    </div>
+    </transition>
 
-                            manualTitle: "熱き魂のガイドブック",
-                            manualContent: `
+    <transition name="fade">
+        <div v-if="showManual" class="modal-overlay">
+            <div class="glass-panel modal-content slide-up">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                    <h2 style="margin:0; color: var(--primary);">{{ t.manualTitle }}</h2>
+                    <button class="icon-btn" @click="showManual = false"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div v-html="t.manualContent" style="line-height: 1.6; color: #ddd;"></div>
+            </div>
+        </div>
+    </transition>
+
+    <footer class="app-footer">
+        ©2026 <a href="https://note.com/jazzy_begin">buro</a>
+    </footer>
+
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data() {
+        return {
+            gameState: 'title',
+            showManual: false,
+            lang: 'ja',
+            isDrumActive: true,
+            
+            dict: {
+                ja: {
+                    start: "練習を始める", shop: "機材ショップ", lessonList: "レッスン一覧",
+                    back: "戻る", funds: "所持金", buy: "購入", owned: "所持", equip: "装備",
+                    items: "サポートアイテム", soundGear: "サウンド機材", drums: "ドラム",
+                    teacherPoint: "先生のアドバイス", startLesson: "レッスン開始", cancel: "中断",
+                    stringRoot: "弦ルート", clearTitle: "素晴らしい！", clearMsg: "よくできました。次のステップへ進みましょう。",
+                    failTitle: "残念...", failMsg: "諦めないで。もう一度トライしましょう。",
+                    next: "次のレッスンへ", retry: "もう一度挑戦",
+                    resetData: "データを初期化",
+                    resetConfirm: "本当に全てのデータを削除して初期化しますか？この操作は取り消せません。",
+                    
+                    adv_basic: "ポジションマーク(●)を信じろ。3, 5, 7, 9, 12フレットにある。",
+                    adv_low: "8フレットはC、10フレットはDだ。位置関係を体で覚えろ。",
+                    adv_string5: "5弦1フレットはBbだ。6弦とは景色が違うぞ。注意せよ。",
+                    adv_mix: "6弦Gの真下はC、6弦Aの真下はDだ。この法則を使え。",
+                    adv_final: "直感を研ぎ澄ませ。考えるな、感じろ。",
+
+                    manualTitle: "熱き魂のガイドブック",
+                    manualContent: `
                         <div class="manual-section">
                         <p>ようこそ、Power Chord Academyへ。<br>ここは最短で「指板の地理」をマスターするための秘密基地だ。</p>
                         <h3>基本的なルール</h3>
@@ -958,26 +592,26 @@
                             </ul>
                         </div>
                     `
-                        },
-                        en: {
-                            start: "Start Practice", shop: "Gear Shop", lessonList: "Lesson List",
-                            back: "Back", funds: "Funds", buy: "Buy", owned: "In Stock", equip: "Equip",
-                            items: "Support Items", soundGear: "Sound Gear", drums: "Drums",
-                            teacherPoint: "Teacher's Tip", startLesson: "Start Lesson", cancel: "Abort",
-                            stringRoot: "th String Root", clearTitle: "Excellent!", clearMsg: "Great job. Let's move to the next step.",
-                            failTitle: "Don't give up...", failMsg: "Practice makes perfect. Try again!",
-                            next: "Next Lesson", retry: "Try Again",
-                            resetData: "Reset Save Data",
-                            resetConfirm: "Are you sure you want to delete all data? This cannot be undone.",
+                },
+                en: {
+                    start: "Start Practice", shop: "Gear Shop", lessonList: "Lesson List",
+                    back: "Back", funds: "Funds", buy: "Buy", owned: "In Stock", equip: "Equip",
+                    items: "Support Items", soundGear: "Sound Gear", drums: "Drums",
+                    teacherPoint: "Teacher's Tip", startLesson: "Start Lesson", cancel: "Abort",
+                    stringRoot: "th String Root", clearTitle: "Excellent!", clearMsg: "Great job. Let's move to the next step.",
+                    failTitle: "Don't give up...", failMsg: "Practice makes perfect. Try again!",
+                    next: "Next Lesson", retry: "Try Again",
+                    resetData: "Reset Save Data",
+                    resetConfirm: "Are you sure you want to delete all data? This cannot be undone.",
 
-                            adv_basic: "Trust the position markers (dots). They are at 3, 5, 7, 9, 12.",
-                            adv_low: "8th fret is C, 10th is D. Memorize the distances.",
-                            adv_string5: "5th String 1st fret is Bb. The view is different from the 6th string. Watch out.",
-                            adv_mix: "Directly below 6th-G is C. Below 6th-A is D. Use this rule.",
-                            adv_final: "Sharpen your intuition. Don't think, feel.",
+                    adv_basic: "Trust the position markers (dots). They are at 3, 5, 7, 9, 12.",
+                    adv_low: "8th fret is C, 10th is D. Memorize the distances.",
+                    adv_string5: "5th String 1st fret is Bb. The view is different from the 6th string. Watch out.",
+                    adv_mix: "Directly below 6th-G is C. Below 6th-A is D. Use this rule.",
+                    adv_final: "Sharpen your intuition. Don't think, feel.",
 
-                            manualTitle: "Soulful Guidebook",
-                            manualContent: `
+                    manualTitle: "Soulful Guidebook",
+                    manualContent: `
                         <div class="manual-section">
                         <p>Welcome to the Power Chord Academy.<br>This is your secret base to master the fretboard geography.</p>
                         <h3>Basic Rules</h3>
@@ -998,387 +632,362 @@
                             </ul>
                         </div>
                     `
-                        }
-                    },
-
-                    savedData: {
-                        maxLevel: 1, gold: 500, inventory: { clock: 1, shield: 1, eye: 1 },
-                        unlockedGears: ['standard'], equippedGear: 'standard'
-                    },
-
-                    shopItems: [
-                        { id: 'clock', name: '魔法の砂時計', nameEn: 'Magic Hourglass', cost: 300, icon: '⏳' },
-                        { id: 'shield', name: '鉄壁の盾', nameEn: 'Iron Shield', cost: 500, icon: '🛡️' },
-                        { id: 'eye', name: '心眼の秘薬', nameEn: 'Mind\'s Eye Potion', cost: 200, icon: '👁️' }
-                    ],
-                    gearList: [
-                        { id: 'standard', name: 'Standard OD', nameEn: 'Standard OD', cost: 0, icon: '🎸' },
-                        { id: 'metal', name: 'Metal Zone', nameEn: 'Metal Zone', cost: 800, icon: '⚡' },
-                        { id: 'fuzz', name: 'Vintage Fuzz', nameEn: 'Vintage Fuzz', cost: 1200, icon: '🔥' },
-                        { id: 'clean', name: 'Jazz Clean', nameEn: 'Jazz Clean', cost: 500, icon: '💎' }
-                    ],
-
-                    currentLevel: 1, score: 0, combo: 0, progress: 0, reqProgress: 5,
-                    timerValue: 100, timerInterval: null,
-                    currentTarget: null,
-                    activeEffects: { clock: false, shield: false, eye: false },
-                    hitEffects: [], effectId: 0,
-                    result: { isClear: false, reward: 0 },
-
-                    questionStartTime: 0, // [New] Speed Bonus Logic
-
-                    allNotes: [
-                        { note: 'F', string: 6, fret: 1 }, { note: 'G', string: 6, fret: 3 }, { note: 'A', string: 6, fret: 5 }, { note: 'B', string: 6, fret: 7 }, { note: 'C', string: 6, fret: 8 }, { note: 'D', string: 6, fret: 10 }, { note: 'E', string: 6, fret: 12 }, { note: 'E', string: 6, fret: 0 },
-                        { note: 'B', string: 5, fret: 2 }, { note: 'C', string: 5, fret: 3 }, { note: 'D', string: 5, fret: 5 }, { note: 'E', string: 5, fret: 7 }, { note: 'F', string: 5, fret: 8 }, { note: 'G', string: 5, fret: 10 }, { note: 'A', string: 5, fret: 12 }, { note: 'A', string: 5, fret: 0 }, { note: 'Bb', string: 5, fret: 1 },
-                        { note: 'F#', string: 6, fret: 2 }, { note: 'Ab', string: 6, fret: 4 }, { note: 'Bb', string: 6, fret: 6 }, { note: 'Db', string: 6, fret: 9 }, { note: 'Eb', string: 6, fret: 11 },
-                        { note: 'Db', string: 5, fret: 4 }, { note: 'Eb', string: 5, fret: 6 }, { note: 'F#', string: 5, fret: 9 }, { note: 'Ab', string: 5, fret: 11 }
-                    ]
                 }
             },
-            created() {
-                this.synth = null;
-                this.distortion = null;
-                this.filter = null;
-                this.reverb = null;
-                this.drumKick = null;
-                this.drumSnare = null;
-                this.drumHat = null;
-                this.drumLoop = null;
+            
+            savedData: {
+                maxLevel: 1, gold: 500, inventory: { clock: 1, shield: 1, eye: 1 },
+                unlockedGears: ['standard'], equippedGear: 'standard'
             },
-            computed: { t() { return this.dict[this.lang]; } },
-            mounted() {
-                const saved = localStorage.getItem('pca_save_v1');
-                if (saved) {
-                    try {
-                        const parsed = JSON.parse(saved);
-                        if (parsed.maxLevel) this.savedData.maxLevel = parsed.maxLevel;
-                        if (parsed.gold !== undefined) this.savedData.gold = parsed.gold;
-                        if (parsed.unlockedGears) this.savedData.unlockedGears = parsed.unlockedGears;
-                        if (parsed.equippedGear) this.savedData.equippedGear = parsed.equippedGear;
-                        if (parsed.inventory) {
-                            this.savedData.inventory = { ...this.savedData.inventory, ...parsed.inventory };
-                        }
-                    } catch (e) { console.error("Save data load error", e); }
+            
+            shopItems: [
+                { id: 'clock', name: '魔法の砂時計', nameEn: 'Magic Hourglass', cost: 300, icon: '⏳' },
+                { id: 'shield', name: '鉄壁の盾', nameEn: 'Iron Shield', cost: 500, icon: '🛡️' },
+                { id: 'eye', name: '心眼の秘薬', nameEn: 'Mind\'s Eye Potion', cost: 200, icon: '👁️' }
+            ],
+            gearList: [
+                { id: 'standard', name: 'Standard OD', nameEn: 'Standard OD', cost: 0, icon: '🎸' },
+                { id: 'metal', name: 'Metal Zone', nameEn: 'Metal Zone', cost: 800, icon: '⚡' },
+                { id: 'fuzz', name: 'Vintage Fuzz', nameEn: 'Vintage Fuzz', cost: 1200, icon: '🔥' },
+                { id: 'clean', name: 'Jazz Clean', nameEn: 'Jazz Clean', cost: 500, icon: '💎' }
+            ],
+            
+            currentLevel: 1, score: 0, combo: 0, progress: 0, reqProgress: 5,
+            timerValue: 100, timerInterval: null,
+            currentTarget: null,
+            activeEffects: { clock: false, shield: false, eye: false },
+            hitEffects: [], effectId: 0,
+            result: { isClear: false, reward: 0 },
+            
+            questionStartTime: 0, // [New] Speed Bonus Logic
+
+            allNotes: [
+                { note: 'F', string: 6, fret: 1 }, { note: 'G', string: 6, fret: 3 }, { note: 'A', string: 6, fret: 5 }, { note: 'B', string: 6, fret: 7 }, { note: 'C', string: 6, fret: 8 }, { note: 'D', string: 6, fret: 10 }, { note: 'E', string: 6, fret: 12 }, { note: 'E', string: 6, fret: 0 },
+                { note: 'B', string: 5, fret: 2 }, { note: 'C', string: 5, fret: 3 }, { note: 'D', string: 5, fret: 5 }, { note: 'E', string: 5, fret: 7 }, { note: 'F', string: 5, fret: 8 }, { note: 'G', string: 5, fret: 10 }, { note: 'A', string: 5, fret: 12 }, { note: 'A', string: 5, fret: 0 }, { note: 'Bb', string: 5, fret: 1 },
+                { note: 'F#', string: 6, fret: 2 }, { note: 'Ab', string: 6, fret: 4 }, { note: 'Bb', string: 6, fret: 6 }, { note: 'Db', string: 6, fret: 9 }, { note: 'Eb', string: 6, fret: 11 },
+                { note: 'Db', string: 5, fret: 4 }, { note: 'Eb', string: 5, fret: 6 }, { note: 'F#', string: 5, fret: 9 }, { note: 'Ab', string: 5, fret: 11 }
+            ]
+        }
+    },
+    created() {
+        this.synth = null;
+        this.distortion = null;
+        this.filter = null;
+        this.reverb = null;
+        this.drumKick = null;
+        this.drumSnare = null;
+        this.drumHat = null;
+        this.drumLoop = null;
+    },
+    computed: { t() { return this.dict[this.lang]; } },
+    mounted() {
+        const saved = localStorage.getItem('pca_save_v1');
+        if (saved) {
+            try { 
+                const parsed = JSON.parse(saved);
+                if(parsed.maxLevel) this.savedData.maxLevel = parsed.maxLevel;
+                if(parsed.gold !== undefined) this.savedData.gold = parsed.gold;
+                if(parsed.unlockedGears) this.savedData.unlockedGears = parsed.unlockedGears;
+                if(parsed.equippedGear) this.savedData.equippedGear = parsed.equippedGear;
+                if(parsed.inventory) {
+                    this.savedData.inventory = { ...this.savedData.inventory, ...parsed.inventory };
                 }
-            },
-            methods: {
+            } catch(e) { console.error("Save data load error", e); }
+        }
+    },
+    methods: {
+        saveGame() { localStorage.setItem('pca_save_v1', JSON.stringify(this.savedData)); },
+        toggleLang() { this.lang = this.lang === 'ja' ? 'en' : 'ja'; },
+        
+        resetGameData() {
+            if(confirm(this.t.resetConfirm)) {
+                localStorage.removeItem('pca_save_v1');
+                location.reload();
+            }
+        },
 
+        goToMenu() { this.stopGame(); this.gameState = 'menu'; },
+        goToShop() { this.stopGame(); this.gameState = 'shop'; },
+        abortMission() { this.stopGame(); this.gameState = 'menu'; },
 
-                saveGame() { localStorage.setItem('pca_save_v1', JSON.stringify(this.savedData)); },
-                toggleLang() { this.lang = this.lang === 'ja' ? 'en' : 'ja'; },
+        stopGame() {
+            if(this.timerInterval) {
+                clearInterval(this.timerInterval);
+                this.timerInterval = null;
+            }
+            if(typeof Tone !== 'undefined' && Tone.Transport) {
+                Tone.Transport.stop();
+            }
+        },
 
-                resetGameData() {
-                    if (confirm(this.t.resetConfirm)) {
-                        localStorage.removeItem('pca_save_v1');
-                        location.reload();
-                    }
-                },
+        selectLevel(lvl) {
+            if (lvl <= this.savedData.maxLevel) {
+                this.currentLevel = lvl;
+                this.gameState = 'briefing';
+            }
+        },
 
-                async goToMenu() {
-                    // Explicitly unlock audio on button click
-                    try {
-                        await Tone.start();
-                        await this.initAudio();
-                        if (Tone.context.state !== 'running') Tone.context.resume();
-                    } catch (e) { console.error("Audio Init Error", e); }
+        buyItem(id, cost) {
+            this.savedData.gold -= cost;
+            if(!this.savedData.inventory[id]) this.savedData.inventory[id]=0;
+            this.savedData.inventory[id]++;
+            this.saveGame();
+        },
+        buyGear(id, cost) {
+            this.savedData.gold -= cost;
+            this.savedData.unlockedGears.push(id);
+            this.saveGame();
+        },
+        equipGear(id) {
+            this.savedData.equippedGear = id;
+            this.saveGame();
+            this.setupToneGear(id);
+        },
 
-                    this.stopGame();
-                    this.gameState = 'menu';
-                },
-                goToShop() { this.stopGame(); this.gameState = 'shop'; },
-                abortMission() { this.stopGame(); this.gameState = 'menu'; },
+        getMissionTitle(lvl) {
+            if (this.lang === 'en') return "Lesson " + lvl;
+            if(lvl<=3) return "6弦の基礎 (G, A, B)";
+            if(lvl<=6) return "開放弦とF";
+            if(lvl<=10) return "6弦ルート完全制覇";
+            if(lvl<=13) return "5弦への転戦";
+            if(lvl<=20) return "5弦ルート完全制覇";
+            if(lvl<=30) return "縦横無尽 (6&5弦)";
+            if(lvl<=40) return "黒鍵の領域 (Sharp/Flat)";
+            return "免許皆伝 (ALL KEYS)";
+        },
+        getMissionDesc(lvl) {
+            if (this.lang === 'en') return "Let's practice power chords.";
+            if(lvl<=3) return "まずは基本となる3, 5, 7フレットの位置を体に刻み込め。";
+            if(lvl<=6) return "1フレット(F)と開放弦(E)が加わる。低い音を意識せよ。";
+            if(lvl<=10) return "12フレットまでの全てのナチュラルノートが出現する。";
+            if(lvl<=13) return "戦場は5弦へ。3, 5, 7フレットの位置関係は6弦と同じだ。";
+            if(lvl<=20) return "5弦の全てのナチュラルノートを攻略せよ。";
+            if(lvl<=30) return "6弦と5弦が入り乱れる。弦移動の反射神経が試される。";
+            if(lvl<=40) return "シャープ・フラットを含む全ての音がランダムに出現する。";
+            return "全ての要素が含まれた最終試験。極限のスピードで挑め。";
+        },
+        
+        getLevelInfo(lvl) {
+            if (lvl <= 3) return { advKey: "adv_basic", pool: n => n.string===6 && [3,5,7].includes(n.fret)};
+            if (lvl <= 10) return { advKey: "adv_low", pool: n => n.string===6 && [0,1,3,5,7,8,10,12].includes(n.fret)};
+            if (lvl <= 20) return { advKey: "adv_string5", pool: n => n.string===5 && [0,1,2,3,5,7,8,10,12].includes(n.fret)};
+            if (lvl <= 30) return { advKey: "adv_mix", pool: n => [0,1,3,5,7,8,10,12].includes(n.fret)};
+            return { advKey: "adv_final", pool: n => true };
+        },
 
-                stopGame() {
-                    if (this.timerInterval) {
-                        clearInterval(this.timerInterval);
-                        this.timerInterval = null;
-                    }
-                    if (typeof Tone !== 'undefined' && Tone.Transport) {
-                        Tone.Transport.stop();
-                    }
-                },
+        async startMission() {
+            try {
+                await Tone.start();
+                await this.initAudio();
+                if (Tone.context.state !== 'running') await Tone.context.resume();
+            } catch (e) {
+                console.error("Audio Start Error", e);
+            }
+            
+            this.gameState = 'playing';
+            this.score = 0; this.combo = 0; this.progress = 0;
+            this.reqProgress = 5 + Math.floor(this.currentLevel/2);
+            this.timerValue = 100;
+            this.activeEffects = { clock: false, shield: false, eye: false };
+            
+            this.nextQuestion();
+            
+            Tone.Transport.stop(); 
+            Tone.Transport.position = 0;
+            Tone.Transport.bpm.value = 110 + (this.currentLevel);
+            
+            if(this.isDrumActive) {
+                Tone.Transport.start();
+                if(this.drumLoop) this.drumLoop.start(0);
+            }
 
-                selectLevel(lvl) {
-                    if (lvl <= this.savedData.maxLevel) {
-                        this.currentLevel = lvl;
-                        this.gameState = 'briefing';
-                    }
-                },
+            if(this.timerInterval) clearInterval(this.timerInterval);
+            const decay = 0.2 + (this.currentLevel * 0.05);
+            this.timerInterval = setInterval(() => {
+                if(!this.activeEffects.clock) this.timerValue -= decay;
+                if(this.timerValue <= 0) this.gameOver();
+            }, 50);
+        },
 
-                buyItem(id, cost) {
-                    this.savedData.gold -= cost;
-                    if (!this.savedData.inventory[id]) this.savedData.inventory[id] = 0;
-                    this.savedData.inventory[id]++;
-                    this.saveGame();
-                },
-                buyGear(id, cost) {
-                    this.savedData.gold -= cost;
-                    this.savedData.unlockedGears.push(id);
-                    this.saveGame();
-                },
-                equipGear(id) {
-                    this.savedData.equippedGear = id;
-                    this.saveGame();
-                    this.setupToneGear(id);
-                },
+        handleInput(e, s, f) {
+            this.resumeAudioForce(); 
 
-                getMissionTitle(lvl) {
-                    if (this.lang === 'en') return "Lesson " + lvl;
-                    if (lvl <= 3) return "6弦の基礎 (G, A, B)";
-                    if (lvl <= 6) return "開放弦とF";
-                    if (lvl <= 10) return "6弦ルート完全制覇";
-                    if (lvl <= 13) return "5弦への転戦";
-                    if (lvl <= 20) return "5弦ルート完全制覇";
-                    if (lvl <= 30) return "縦横無尽 (6&5弦)";
-                    if (lvl <= 40) return "黒鍵の領域 (Sharp/Flat)";
-                    return "免許皆伝 (ALL KEYS)";
-                },
-                getMissionDesc(lvl) {
-                    if (this.lang === 'en') return "Let's practice power chords.";
-                    if (lvl <= 3) return "まずは基本となる3, 5, 7フレットの位置を体に刻み込め。";
-                    if (lvl <= 6) return "1フレット(F)と開放弦(E)が加わる。低い音を意識せよ。";
-                    if (lvl <= 10) return "12フレットまでの全てのナチュラルノートが出現する。";
-                    if (lvl <= 13) return "戦場は5弦へ。3, 5, 7フレットの位置関係は6弦と同じだ。";
-                    if (lvl <= 20) return "5弦の全てのナチュラルノートを攻略せよ。";
-                    if (lvl <= 30) return "6弦と5弦が入り乱れる。弦移動の反射神経が試される。";
-                    if (lvl <= 40) return "シャープ・フラットを含む全ての音がランダムに出現する。";
-                    return "全ての要素が含まれた最終試験。極限のスピードで挑め。";
-                },
+            let cx, cy;
+            if(e.type==='touchstart'){ cx=e.changedTouches[0].clientX; cy=e.changedTouches[0].clientY; }
+            else { cx=e.clientX; cy=e.clientY; }
+            
+            const target = this.currentTarget;
+            if(!target) return;
 
-                getLevelInfo(lvl) {
-                    if (lvl <= 3) return { advKey: "adv_basic", pool: n => n.string === 6 && [3, 5, 7].includes(n.fret) };
-                    if (lvl <= 10) return { advKey: "adv_low", pool: n => n.string === 6 && [0, 1, 3, 5, 7, 8, 10, 12].includes(n.fret) };
-                    if (lvl <= 20) return { advKey: "adv_string5", pool: n => n.string === 5 && [0, 1, 2, 3, 5, 7, 8, 10, 12].includes(n.fret) };
-                    if (lvl <= 30) return { advKey: "adv_mix", pool: n => [0, 1, 3, 5, 7, 8, 10, 12].includes(n.fret) };
-                    return { advKey: "adv_final", pool: n => true };
-                },
+            // [New] Speed Calculation
+            const reactionTime = Date.now() - this.questionStartTime;
+            let speedBonus = 0;
+            if(reactionTime < 1000) speedBonus = 500;
+            else if(reactionTime < 2000) speedBonus = 300;
+            else if(reactionTime < 3000) speedBonus = 100;
 
-                async startMission() {
-                    // [iOS PWA Fix] Ensure audio is initialized on user interaction
-                    try {
-                        if (typeof Tone === 'undefined') {
-                            console.error('Tone.js not loaded');
-                            // Continue anyway - audio just won't work
-                        } else {
-                            await Tone.start();
-                            await this.initAudio();
-                            if (Tone.context.state !== 'running') {
-                                await Tone.context.resume();
-                            }
-                        }
-                    } catch (e) {
-                        console.error("Audio Start Error", e);
-                        // Don't block game start even if audio fails
-                    }
+            if(target.string === s && target.fret === f) {
+                this.combo++; 
+                // [New] Combo & Speed Score Logic
+                this.score += 100 + (this.combo * 50) + speedBonus + Math.floor(this.timerValue);
+                
+                this.timerValue = Math.min(100, this.timerValue+20);
+                this.progress++;
+                this.playPowerChord(target.note);
+                
+                // Show Effect based on speed
+                const text = speedBonus >= 500 ? "EXCELLENT!" : "GOOD!";
+                const color = speedBonus >= 500 ? "var(--gold)" : "var(--success)";
+                this.spawnEffect(cx, cy, text, color, "2rem");
+                
+                if(this.activeEffects.eye) this.activeEffects.eye = false;
 
-                    this.gameState = 'playing';
-                    this.score = 0; this.combo = 0; this.progress = 0;
-                    this.reqProgress = 5 + Math.floor(this.currentLevel / 2);
-                    this.timerValue = 100;
-                    this.activeEffects = { clock: false, shield: false, eye: false };
-
-                    this.nextQuestion();
-
-                    // Setup drums if available and enabled
-                    if (typeof Tone !== 'undefined' && Tone.Transport) {
-                        Tone.Transport.stop();
-                        Tone.Transport.position = 0;
-                        Tone.Transport.bpm.value = 110 + (this.currentLevel);
-
-                        if (this.isDrumActive) {
-                            Tone.Transport.start();
-                            if (this.drumLoop) this.drumLoop.start(0);
-                        }
-                    }
-
-                    if (this.timerInterval) clearInterval(this.timerInterval);
-                    const decay = 0.2 + (this.currentLevel * 0.05);
-                    this.timerInterval = setInterval(() => {
-                        if (!this.activeEffects.clock) this.timerValue -= decay;
-                        if (this.timerValue <= 0) this.gameOver();
-                    }, 50);
-                },
-
-                handleInput(e, s, f) {
-                    this.resumeAudioForce();
-
-                    let cx, cy;
-                    if (e.type === 'touchstart') { cx = e.changedTouches[0].clientX; cy = e.changedTouches[0].clientY; }
-                    else { cx = e.clientX; cy = e.clientY; }
-
-                    const target = this.currentTarget;
-                    if (!target) return;
-
-                    // [New] Speed Calculation
-                    const reactionTime = Date.now() - this.questionStartTime;
-                    let speedBonus = 0;
-                    if (reactionTime < 1000) speedBonus = 500;
-                    else if (reactionTime < 2000) speedBonus = 300;
-                    else if (reactionTime < 3000) speedBonus = 100;
-
-                    if (target.string === s && target.fret === f) {
-                        this.combo++;
-                        // [New] Combo & Speed Score Logic
-                        this.score += 100 + (this.combo * 50) + speedBonus + Math.floor(this.timerValue);
-
-                        this.timerValue = Math.min(100, this.timerValue + 20);
-                        this.progress++;
-                        this.playPowerChord(target.note);
-
-                        // Show Effect based on speed
-                        const text = speedBonus >= 500 ? "EXCELLENT!" : "GOOD!";
-                        const color = speedBonus >= 500 ? "var(--gold)" : "var(--success)";
-                        this.spawnEffect(cx, cy, text, color, "2rem");
-
-                        if (this.activeEffects.eye) this.activeEffects.eye = false;
-
-                        if (this.progress >= this.reqProgress) this.missionClear();
-                        else this.nextQuestion();
-                    } else {
-                        if (this.activeEffects.shield) {
-                            this.activeEffects.shield = false;
-                            this.spawnEffect(cx, cy, "SHIELD BLOCK!", "#fff", "1.5rem");
-                            // 盾が発動した演出（在庫が減るなどはHTML側でリアクティブに反映）
-                        } else {
-                            this.combo = 0;
-                            this.spawnEffect(cx, cy, "MISS...", "#888", "1.5rem");
-                            this.timerValue -= 15;
-                            // ミス音（オプション）
-                            this.triggerSnare(Tone.now());
-                        }
-                    }
-                },
-
-                resumeAudioForce() {
-                    if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
-                        Tone.context.resume().catch(() => { });
-                    }
-                },
-
-                nextQuestion() {
-                    const info = this.getLevelInfo(this.currentLevel);
-                    const pool = this.allNotes.filter(info.pool);
-                    let nextQ;
-                    let attempts = 0;
-                    do {
-                        nextQ = pool[Math.floor(Math.random() * pool.length)];
-                        attempts++;
-                    } while (pool.length > 1 && this.currentTarget && nextQ.note === this.currentTarget.note && attempts < 10);
-                    this.currentTarget = nextQ;
-                    this.questionStartTime = Date.now(); // [New] Reset timer
-                },
-
-                missionClear() {
-                    this.stopGame();
-                    this.result.isClear = true;
-                    this.result.reward = Math.floor(this.score * 0.1);
-                    this.savedData.gold += this.result.reward;
-                    if (this.currentLevel === this.savedData.maxLevel && this.savedData.maxLevel < 50) this.savedData.maxLevel++;
-                    this.saveGame();
-                    setTimeout(() => this.gameState = 'result', 500);
-                },
-                gameOver() {
-                    this.stopGame();
-                    this.result.isClear = false;
-                    this.result.reward = Math.floor(this.score * 0.05);
-                    this.savedData.gold += this.result.reward;
-                    this.saveGame();
-                    this.gameState = 'result';
-                },
-                nextMission() {
-                    this.currentLevel++;
-                    this.gameState = 'briefing';
-                },
-
-                useItem(type) {
-                    if (this.savedData.inventory[type] > 0 && !this.activeEffects[type]) {
-                        this.savedData.inventory[type]--;
-                        this.activeEffects[type] = true;
-                        if (type === 'clock') setTimeout(() => this.activeEffects.clock = false, 5000);
-                        this.saveGame();
-                    }
-                },
-                spawnEffect(x, y, text, color, size = "2.5rem") {
-                    const id = this.effectId++;
-                    if (!x) { x = window.innerWidth / 2; y = window.innerHeight / 3; }
-                    this.hitEffects.push({ id, x: x, y: y, text, color, size });
-                    setTimeout(() => this.hitEffects = this.hitEffects.filter(e => e.id !== id), 600);
-                },
-
-                async initAudio() {
-                    if (this.synth) return;
-
-                    // Synth
-                    this.synth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sawtooth" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.5 } });
-                    this.distortion = new Tone.Distortion(0).toDestination();
-                    this.filter = new Tone.Filter(2000, "lowpass").toDestination();
-                    this.reverb = new Tone.Reverb({ decay: 1.5, preDelay: 0.01 }).toDestination();
-
-                    // Drums (Heavy Rock)
-                    this.drumKick = new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 10, oscillator: { type: "sine" }, envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 }, volume: -2 }).toDestination();
-
-                    // Snare (Noise+Tone)
-                    const snareNoise = new Tone.NoiseSynth({ noise: { type: "white" }, envelope: { attack: 0.001, decay: 0.2, sustain: 0 } });
-                    const snareTone = new Tone.MembraneSynth({ pitchDecay: 0, octaves: 0, oscillator: { type: "triangle" }, envelope: { attack: 0.001, decay: 0.2, sustain: 0 }, volume: -5 });
-                    const snareVol = new Tone.Volume(-5).toDestination();
-                    snareNoise.connect(snareVol); snareTone.connect(snareVol);
-                    this.drumSnare = { noise: snareNoise, tone: snareTone };
-
-                    this.drumHat = new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.05, release: 0.05 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5, volume: -18 }).toDestination();
-
-                    this.setupToneGear(this.savedData.equippedGear);
-                    this.setupDrumLoop();
-                },
-
-                setupDrumLoop() {
-                    this.drumLoop = new Tone.Loop(time => {
-                        const t8 = Tone.Time("8n").toSeconds();
-                        this.drumKick.triggerAttackRelease("C1", "8n", time);
-                        this.drumKick.triggerAttackRelease("C1", "8n", time + t8 * 4);
-                        this.drumKick.triggerAttackRelease("C1", "8n", time + t8 * 5);
-                        this.triggerSnare(time + t8 * 2);
-                        this.triggerSnare(time + t8 * 6);
-                        for (let i = 0; i < 8; i++) this.drumHat.triggerAttackRelease("32n", time + t8 * i, i % 2 === 0 ? 0.8 : 0.4);
-                    }, "1m");
-                },
-                triggerSnare(time) {
-                    this.drumSnare.noise.triggerAttack(time);
-                    this.drumSnare.tone.triggerAttackRelease("C2", "8n", time);
-                },
-                setupToneGear(id) {
-                    if (!this.synth) return;
-                    try {
-                        this.synth.disconnect();
-                        this.synth.chain(this.distortion, this.filter, this.reverb, Tone.Destination);
-
-                        this.synth.volume.value = -5;
-                        if (id === 'standard') { this.synth.set({ oscillator: { type: "sawtooth" } }); this.distortion.distortion = 0.4; }
-                        else if (id === 'metal') { this.synth.set({ oscillator: { type: "square" } }); this.distortion.distortion = 0.8; this.filter.frequency.value = 4000; }
-                        else if (id === 'fuzz') { this.synth.set({ oscillator: { type: "square" } }); this.distortion.distortion = 1.0; this.filter.frequency.value = 1500; }
-                        else if (id === 'clean') { this.synth.set({ oscillator: { type: "triangle" } }); this.distortion.distortion = 0; this.filter.frequency.value = 5000; }
-                    } catch (e) { }
-                },
-                playPowerChord(note) {
-                    if (!this.synth) return;
-                    try {
-                        const r = note + "2";
-                        const rf = Tone.Frequency(r);
-                        this.synth.triggerAttackRelease([rf, rf.transpose(7), rf.transpose(12)], "8n");
-                    } catch (e) { }
+                if(this.progress >= this.reqProgress) this.missionClear();
+                else this.nextQuestion();
+            } else {
+                if(this.activeEffects.shield) {
+                    this.activeEffects.shield = false;
+                    this.spawnEffect(cx, cy, "SHIELD BLOCK!", "#fff", "1.5rem");
+                    // 盾が発動した演出（在庫が減るなどはHTML側でリアクティブに反映）
+                } else {
+                    this.combo = 0;
+                    this.spawnEffect(cx, cy, "MISS...", "#888", "1.5rem");
+                    this.timerValue -= 15;
+                    // ミス音（オプション）
+                    this.triggerSnare(Tone.now()); 
                 }
             }
-        }).mount('#app');
-    </script>
-    <script>
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered!', reg))
-                    .catch(err => console.log('Service Worker registration failed', err));
-            });
-        }
-    </script>
-</body>
+        },
 
+        resumeAudioForce() {
+            if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
+                Tone.context.resume().catch(()=>{});
+            }
+        },
+
+        nextQuestion() {
+            const info = this.getLevelInfo(this.currentLevel);
+            const pool = this.allNotes.filter(info.pool);
+            let nextQ;
+            let attempts = 0;
+            do {
+                nextQ = pool[Math.floor(Math.random()*pool.length)];
+                attempts++;
+            } while (pool.length > 1 && this.currentTarget && nextQ.note === this.currentTarget.note && attempts < 10);
+            this.currentTarget = nextQ;
+            this.questionStartTime = Date.now(); // [New] Reset timer
+        },
+
+        missionClear() {
+            this.stopGame(); 
+            this.result.isClear = true;
+            this.result.reward = Math.floor(this.score * 0.1);
+            this.savedData.gold += this.result.reward;
+            if(this.currentLevel === this.savedData.maxLevel && this.savedData.maxLevel < 50) this.savedData.maxLevel++;
+            this.saveGame();
+            setTimeout(() => this.gameState = 'result', 500);
+        },
+        gameOver() {
+            this.stopGame(); 
+            this.result.isClear = false;
+            this.result.reward = Math.floor(this.score * 0.05);
+            this.savedData.gold += this.result.reward;
+            this.saveGame();
+            this.gameState = 'result';
+        },
+        nextMission() {
+            this.currentLevel++;
+            this.gameState = 'briefing';
+        },
+
+        useItem(type) {
+            if(this.savedData.inventory[type] > 0 && !this.activeEffects[type]) {
+                this.savedData.inventory[type]--;
+                this.activeEffects[type] = true;
+                if(type==='clock') setTimeout(()=>this.activeEffects.clock=false, 5000);
+                this.saveGame();
+            }
+        },
+        spawnEffect(x,y,text, color, size="2.5rem") {
+            const id = this.effectId++;
+            if(!x) { x = window.innerWidth/2; y = window.innerHeight/3; }
+            this.hitEffects.push({id, x:x, y:y, text, color, size});
+            setTimeout(()=>this.hitEffects=this.hitEffects.filter(e=>e.id!==id), 600);
+        },
+
+        async initAudio() {
+            if (this.synth) return;
+            
+            // Synth
+            this.synth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sawtooth" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.5 } });
+            this.distortion = new Tone.Distortion(0).toDestination();
+            this.filter = new Tone.Filter(2000, "lowpass").toDestination();
+            this.reverb = new Tone.Reverb({ decay: 1.5, preDelay: 0.01 }).toDestination();
+            
+            // Drums (Heavy Rock)
+            this.drumKick = new Tone.MembraneSynth({ pitchDecay:0.05, octaves:10, oscillator:{type:"sine"}, envelope:{attack:0.001, decay:0.4, sustain:0.01, release:1.4}, volume:-2 }).toDestination();
+            
+            // Snare (Noise+Tone)
+            const snareNoise = new Tone.NoiseSynth({ noise:{type:"white"}, envelope:{attack:0.001, decay:0.2, sustain:0}});
+            const snareTone = new Tone.MembraneSynth({ pitchDecay:0, octaves:0, oscillator:{type:"triangle"}, envelope:{attack:0.001, decay:0.2, sustain:0}, volume:-5});
+            const snareVol = new Tone.Volume(-5).toDestination();
+            snareNoise.connect(snareVol); snareTone.connect(snareVol);
+            this.drumSnare = { noise: snareNoise, tone: snareTone };
+
+            this.drumHat = new Tone.MetalSynth({ frequency:200, envelope:{attack:0.001, decay:0.05, release:0.05}, harmonicity:5.1, modulationIndex:32, resonance:4000, octaves:1.5, volume:-18 }).toDestination();
+
+            this.setupToneGear(this.savedData.equippedGear);
+            this.setupDrumLoop();
+        },
+
+        setupDrumLoop() {
+            this.drumLoop = new Tone.Loop(time => {
+                const t8 = Tone.Time("8n").toSeconds();
+                this.drumKick.triggerAttackRelease("C1", "8n", time);
+                this.drumKick.triggerAttackRelease("C1", "8n", time + t8*4);
+                this.drumKick.triggerAttackRelease("C1", "8n", time + t8*5);
+                this.triggerSnare(time + t8*2);
+                this.triggerSnare(time + t8*6);
+                for(let i=0; i<8; i++) this.drumHat.triggerAttackRelease("32n", time + t8*i, i%2===0?0.8:0.4);
+            }, "1m");
+        },
+        triggerSnare(time) {
+            this.drumSnare.noise.triggerAttack(time);
+            this.drumSnare.tone.triggerAttackRelease("C2", "8n", time);
+        },
+        setupToneGear(id) {
+            if (!this.synth) return;
+            try {
+                this.synth.disconnect(); 
+                this.synth.chain(this.distortion, this.filter, this.reverb, Tone.Destination);
+                
+                this.synth.volume.value = -5;
+                if(id==='standard') { this.synth.set({oscillator:{type:"sawtooth"}}); this.distortion.distortion=0.4; }
+                else if(id==='metal') { this.synth.set({oscillator:{type:"square"}}); this.distortion.distortion=0.8; this.filter.frequency.value=4000; }
+                else if(id==='fuzz') { this.synth.set({oscillator:{type:"square"}}); this.distortion.distortion=1.0; this.filter.frequency.value=1500; }
+                else if(id==='clean') { this.synth.set({oscillator:{type:"triangle"}}); this.distortion.distortion=0; this.filter.frequency.value=5000; }
+            } catch(e) {}
+        },
+        playPowerChord(note) {
+            if(!this.synth) return;
+            try {
+                const r = note+"2"; 
+                const rf = Tone.Frequency(r);
+                this.synth.triggerAttackRelease([rf, rf.transpose(7), rf.transpose(12)], "8n");
+            } catch(e){}
+        }
+    }
+}).mount('#app');
+</script>
+<script>
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registered!', reg))
+                .catch(err => console.log('Service Worker registration failed', err));
+        });
+    }
+</script>
+</body>
 </html>
