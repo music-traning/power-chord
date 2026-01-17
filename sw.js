@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pca-glass-v1';
+const CACHE_NAME = 'pca-glass-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
