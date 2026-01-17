@@ -1061,9 +1061,9 @@
                     } catch (e) { console.error("Save data load error", e); }
                 }
 
-                // [Refined] Resume Audio on Visibility Change (Only if already initialized)
+                // Resume audio context when returning from background
                 document.addEventListener('visibilitychange', () => {
-                    if (document.visibilityState === 'visible') {
+                    if (document.visibilityState === 'visible' && this.synth) {
                         this.resumeAudioForce();
                     }
                 });
@@ -1105,16 +1105,8 @@
                     }
                 },
 
-                async selectLevel(lvl) {
+                selectLevel(lvl) {
                     if (lvl <= this.savedData.maxLevel) {
-                        // Ensure audio is ready even if starting from menu (e.g. after refresh)
-                        try {
-                            if (Tone.context.state !== 'running') {
-                                await Tone.start();
-                                await this.initAudio();
-                            }
-                        } catch (e) { }
-
                         this.currentLevel = lvl;
                         this.gameState = 'briefing';
                     }
@@ -1169,12 +1161,21 @@
                 },
 
                 async startMission() {
+                    // [iOS PWA Fix] Ensure audio is initialized on user interaction
                     try {
-                        await Tone.start();
-                        await this.initAudio();
-                        if (Tone.context.state !== 'running') await Tone.context.resume();
+                        if (typeof Tone === 'undefined') {
+                            console.error('Tone.js not loaded');
+                            // Continue anyway - audio just won't work
+                        } else {
+                            await Tone.start();
+                            await this.initAudio();
+                            if (Tone.context.state !== 'running') {
+                                await Tone.context.resume();
+                            }
+                        }
                     } catch (e) {
                         console.error("Audio Start Error", e);
+                        // Don't block game start even if audio fails
                     }
 
                     this.gameState = 'playing';
@@ -1185,13 +1186,16 @@
 
                     this.nextQuestion();
 
-                    Tone.Transport.stop();
-                    Tone.Transport.position = 0;
-                    Tone.Transport.bpm.value = 110 + (this.currentLevel);
+                    // Setup drums if available and enabled
+                    if (typeof Tone !== 'undefined' && Tone.Transport) {
+                        Tone.Transport.stop();
+                        Tone.Transport.position = 0;
+                        Tone.Transport.bpm.value = 110 + (this.currentLevel);
 
-                    if (this.isDrumActive) {
-                        Tone.Transport.start();
-                        if (this.drumLoop) this.drumLoop.start(0);
+                        if (this.isDrumActive) {
+                            Tone.Transport.start();
+                            if (this.drumLoop) this.drumLoop.start(0);
+                        }
                     }
 
                     if (this.timerInterval) clearInterval(this.timerInterval);
